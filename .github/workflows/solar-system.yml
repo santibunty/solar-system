@@ -13,7 +13,7 @@ jobs:
     unit-testing:
         strategy:
             matrix:
-                nodejs_version: [18,19,20]
+                nodejs_version: [18,20]
                 operating_system: [ubuntu-latest, macos-latest]
                 exclude:
                     - nodejs_version: 18
@@ -29,10 +29,26 @@ jobs:
             node-version: 18
         - name: install dependencies
           run: npm install
-        - name: Unit tesing
+        - name: Unit testing
+          id: nodejs-unit-testing-step
           run: npm test
         - name: archive test results
+          if: steps.nodejs-unit-testing-step.outcome == 'failure' || steps.nodejs-unit-testing-step.outcome == 'success'
           uses: actions/upload-artifact@v4
           with:
             name: Mocha-test
             path: test-results.xml
+
+        name: code coverage
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout Repo
+          uses: actions/checkout@v4
+        - name: Setup nodejs
+          uses: actions/setup-node@v3
+          with:
+            node-version: 18
+        - name: install dependencies
+          run: npm install
+        - name: code coverage
+          run: npm run coverage
