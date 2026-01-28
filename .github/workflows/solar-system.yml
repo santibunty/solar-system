@@ -9,6 +9,11 @@ jobs:
   docker:
     name: containerization
     runs-on: ubuntu-latest
+    container:
+        image: ghcr.io/node-and-package:20
+    services:
+        mongodb-service:
+            image: mongodb:non-prod
     permissions: 
         packages: write
     steps:

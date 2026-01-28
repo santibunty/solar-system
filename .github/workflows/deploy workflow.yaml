@@ -1,0 +1,23 @@
+name: deploy workflow
+on:
+    workflow_dispatch:
+    push:
+        branches:
+        - main
+        - 'feature/*'
+jobs:
+    dev-deploy:
+      runs-on: ubuntu-latest
+      steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+      - name: install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.26.0'
+      - name: fetch k8s cluster details
+        run: |
+          kubectl version --short
+          echo -------
+          kubectl get nodes
+    
